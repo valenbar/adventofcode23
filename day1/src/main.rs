@@ -49,7 +49,7 @@ fn parse_all_digits(line: &str) -> Vec<u32> {
                 digits.push(4);
             }
             if line[i..i+4].contains("five") {
-                digits.push(6);
+                digits.push(5);
             }
             if line[i..i+4].contains("nine") {
                 digits.push(9);
@@ -68,7 +68,6 @@ fn parse_all_digits(line: &str) -> Vec<u32> {
         }
         i += 1;
     }
-    // todo go backwarts through string for finding the last digit
     digits
 }
 
