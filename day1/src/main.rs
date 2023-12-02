@@ -23,51 +23,23 @@ fn parse_line(line: &str) -> u32 {
 }
 
 fn parse_all_digits(line: &str) -> Vec<u32> {
-    let mut digits: Vec<u32> = vec![];
-    let mut i: usize = 0;
+    static DIGIT_WORDS: [&str; 9] = [
+        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
+    ];
+    let mut digits: Vec<u32> = Vec::new();
 
-    while i < line.len() {
-        let j = line.len() - i;
+    for i in 0..line.len() {
         if let Some(d) = line.chars().nth(i).unwrap().to_digit(10) {
             digits.push(d);
-            i += 1;
-            continue;
-        }
-        if j >= 5 {
-            if line[i..i+5].contains("three") {
-                digits.push(3);
-            }
-            if line[i..i+5].contains("seven") {
-                digits.push(7);
-            }
-            if line[i..i+5].contains("eight") {
-                digits.push(8);
+        } else {
+            for (j, word) in DIGIT_WORDS.iter().enumerate() {
+                if line[i..].starts_with(word) {
+                    digits.push((j+1) as u32);
+                }
             }
         }
-        if j >= 4 {
-            if line[i..i+4].contains("four") {
-                digits.push(4);
-            }
-            if line[i..i+4].contains("five") {
-                digits.push(5);
-            }
-            if line[i..i+4].contains("nine") {
-                digits.push(9);
-            }
-        }
-        if j >= 3 {
-            if line[i..i+3].contains("one") {
-                digits.push(1);
-            }
-            if line[i..i+3].contains("two") {
-                digits.push(2);
-            }
-            if line[i..i+3].contains("six") {
-                digits.push(6);
-            }
-        }
-        i += 1;
     }
+
     digits
 }
 
