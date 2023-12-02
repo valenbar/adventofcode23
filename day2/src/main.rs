@@ -44,6 +44,12 @@ impl PartialEq for Dice {
     }
 }
 
+impl Dice {
+    fn power(&self) -> u32 {
+        self.r * self.g * self.b
+    }
+}
+
 #[derive(Debug)]
 struct Game {
     id: u32,
@@ -55,6 +61,26 @@ impl Game {
         self.dice_sets
             .iter()
             .all(|d| d <= dice)
+    }
+
+    fn min(&self) -> Dice {
+        Dice {
+            r: self.dice_sets
+                .iter()
+                .map(|d| d.r)
+                .max()
+                .unwrap(),
+            g: self.dice_sets
+                .iter()
+                .map(|d| d.g)
+                .max()
+                .unwrap(),
+            b: self.dice_sets
+                .iter()
+                .map(|d| d.b)
+                .max()
+                .unwrap()
+        }
     }
 }
 
@@ -108,13 +134,22 @@ fn main() -> Result<(), io::Error> {
 
     // task 1
     let mut sum = 0;
-    for game in games {
+    for game in &games {
         if game.possible_with(&DICE_BAG) {
             sum += game.id;
         }
-        // println!("{:?}", game.possible_with(&DICE_BAG));
     }
     println!("task 1: {sum}");
+
+    // task 2
+    let mut sum = 0;
+    for game in games {
+        let min_dice = game.min();
+        let power = min_dice.power();
+        sum += power;
+    }
+    println!("task 2: {sum}");
+
 
     return Ok(());
 }
