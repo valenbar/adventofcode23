@@ -1,6 +1,6 @@
 #![allow(unused)]
 
-use std::{fs, io, vec};
+use std::{fs, io, vec, u32};
 
 
 
@@ -37,9 +37,10 @@ fn parse_number(line: &Vec<char>, pos: usize) -> Option<u32> {
 }
 
 
-fn find_numbers(mat: &Vec<Vec<char>>) -> Vec<u32> {
+fn find_numbers(mat: &Vec<Vec<char>>) -> (Vec<u32>, Vec<u32>) {
     static NO_SYMBOL: &str = "0123456789.";
     let mut numbers = Vec::new();
+    let mut gear_ratios: Vec<u32> = Vec::new();
     let mat_size = mat.len();
 
     for row in 0..mat_size {
@@ -87,29 +88,39 @@ fn find_numbers(mat: &Vec<Vec<char>>) -> Vec<u32> {
                 }
             }
 
+            let mut numbers_temp = Vec::new();
             for (r, c) in locations_to_check {
                 if let Some(number) = parse_number(&mat[r as usize], c as usize) {
-                    numbers.push(number);
+                    numbers_temp.push(number);
                 }
             }
+            if symbol == '*' && numbers_temp.len() == 2 {
+                let gear_ratio = numbers_temp.iter().product();
+                gear_ratios.push(gear_ratio);
+            }
+            numbers.extend(numbers_temp);
         }
     }
 
-    numbers
+    (numbers, gear_ratios)
 }
 
 
 fn main() -> Result<(), io::Error>{
-    let input: Vec<Vec<char>> = fs::read_to_string("./input_demo.txt")?
+    let input: Vec<Vec<char>> = fs::read_to_string("./input.txt")?
         .lines()
         .into_iter()
         .map(|s| s.chars().collect())
         .collect();
+    let (numbers, gear_ratios) = find_numbers(&input);
 
     // task 1
-    let numbers = find_numbers(&input);
     let result_task_1: u32 = numbers.iter().sum();
     println!("task 1: {result_task_1}");
+
+    // task 2
+    let result_task_2: u32 = gear_ratios.iter().sum();
+    println!("task 2: {result_task_2}");
 
     Ok(())
 }
