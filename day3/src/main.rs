@@ -1,7 +1,4 @@
-#![allow(unused)]
-
-use std::{fs, io, vec, u32};
-
+use std::{fs, io};
 
 
 fn parse_number(line: &Vec<char>, pos: usize) -> Option<u32> {
@@ -50,7 +47,6 @@ fn find_numbers(mat: &Vec<Vec<char>>) -> (Vec<u32>, Vec<u32>) {
             if NO_SYMBOL.contains(symbol) {
                 continue;
             }
-            // print!("{symbol}");
 
             let (dl, ll, ul, uu, ur, rr, dr, dd) = (
                 ((row + 1), (col - 1)),
@@ -77,9 +73,6 @@ fn find_numbers(mat: &Vec<Vec<char>>) -> (Vec<u32>, Vec<u32>) {
                 locations_to_check.push(dl);
                 locations_to_check.push(dr);
             }
-
-
-            // println!("{:?}", adj_locations);
 
             // enforce bounds
             for (x, y) in &locations_to_check {
