@@ -100,9 +100,7 @@ fn find_numbers(mat: &Vec<Vec<char>>) -> Vec<u32> {
 
 
 fn main() -> Result<(), io::Error>{
-    static HEIGH: u32 = 140;
-    static WIDTH: u32 = 140;
-    let input: Vec<Vec<char>> = fs::read_to_string("./input.txt")?
+    let input: Vec<Vec<char>> = fs::read_to_string("./input_demo.txt")?
         .lines()
         .into_iter()
         .map(|s| s.chars().collect())
