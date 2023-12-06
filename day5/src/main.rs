@@ -46,17 +46,21 @@ fn traverse_maps(maps: &Vec<Vec<(usize, usize, usize)>>, seed: usize) -> usize {
 }
 
 
-fn parse_seed_ranges(seed_ranges: Vec<usize>) -> Vec<usize> {
-    let mut seeds: Vec<usize> = Vec::new();
+fn parse_seed_ranges(maps: Vec<Vec<(usize, usize, usize)>>, seed_ranges: Vec<usize>) -> usize {
+    let mut min_location: usize = std::usize::MAX;
     for i in 0..(seed_ranges.len() / 2) {
         let (start, range) = (seed_ranges[i * 2], seed_ranges[i * 2 + 1]);
         for seed in start..(start + range) {
-            seeds.push(seed);
             // todo compute location directly here and check against minimum
+            let location = traverse_maps(&maps, seed);
+            if location < min_location {
+                min_location = location;
+            }
         }
+        println!("seed {start} - {range} done");
     }
 
-    seeds
+    min_location
 }
 
 
@@ -79,11 +83,7 @@ fn main() -> Result<(), Error> {
 
     // task 2
     let mut locations: Vec<usize> = Vec::new();
-    let seeds = parse_seed_ranges(seeds);
-    for seed in seeds {
-        locations.push(traverse_maps(&maps, seed))
-    }
-    let task_2 = locations.iter().min().unwrap();
+    let task_2 = parse_seed_ranges(maps, seeds);
     println!("task 2: {task_2}");
 
     Ok(())
