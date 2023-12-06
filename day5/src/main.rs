@@ -46,6 +46,20 @@ fn traverse_maps(maps: &Vec<Vec<(usize, usize, usize)>>, seed: usize) -> usize {
 }
 
 
+fn parse_seed_ranges(seed_ranges: Vec<usize>) -> Vec<usize> {
+    let mut seeds: Vec<usize> = Vec::new();
+    for i in 0..(seed_ranges.len() / 2) {
+        let (start, range) = (seed_ranges[i * 2], seed_ranges[i * 2 + 1]);
+        for seed in start..(start + range) {
+            seeds.push(seed);
+            // todo compute location directly here and check against minimum
+        }
+    }
+
+    seeds
+}
+
+
 fn main() -> Result<(), Error> {
     let input = fs::read_to_string("./input.txt")?;
     let lines: Vec<&str> = input.lines().collect();
@@ -54,14 +68,23 @@ fn main() -> Result<(), Error> {
         .filter_map(|s| s.parse::<usize>().ok())
         .collect();
     let maps = build_mappings(lines);
+
+    // task 1
     let mut locations: Vec<usize> = Vec::new();
-    for seed in seeds {
+    for seed in seeds.clone() {
         locations.push(traverse_maps(&maps, seed))
     }
-
     let task_1 = locations.iter().min().unwrap();
     println!("task 1: {task_1}");
 
+    // task 2
+    let mut locations: Vec<usize> = Vec::new();
+    let seeds = parse_seed_ranges(seeds);
+    for seed in seeds {
+        locations.push(traverse_maps(&maps, seed))
+    }
+    let task_2 = locations.iter().min().unwrap();
+    println!("task 2: {task_2}");
 
     Ok(())
 }
