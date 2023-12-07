@@ -23,7 +23,7 @@ fn main() -> Result<(), std::io::Error> {
         .map(|(mult, hand)| hand.bid * (mult + 1) )
         .sum();
 
-    println!("task 1: {}", task_1);
+    println!("task 1: {} - 248569531", task_1);
 
     // task 2
     let mut hands: Vec<hand_t2::Hand> = input
@@ -40,7 +40,7 @@ fn main() -> Result<(), std::io::Error> {
         .map(|(mult, hand)| hand.bid * (mult + 1) )
         .sum();
 
-    println!("task 2: {}", task_2);
+    println!("task 2: {} - 250382098", task_2);
 
 
     Ok(())

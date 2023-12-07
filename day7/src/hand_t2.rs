@@ -35,7 +35,7 @@ impl From<(&str, &str)> for Hand {
     fn from(value: (&str, &str)) -> Self {
         let (hand_str, bid_str) = value;
         // parse hand type
-        let occurence_vec: Vec<usize> = hand_str
+        let mut occurence_vec: Vec<usize> = hand_str
             .replace("J", "")
             .chars()
             .unique()
@@ -49,32 +49,19 @@ impl From<(&str, &str)> for Hand {
             .filter(|ch| *ch == 'J')
             .count();
 
-        let hand_type = match (occurence_vec.as_slice(), j_count) {
-            ([5], _) => 7,
-            (_, 5) => 7,
-            ([4, ..], 1) => 7,
-            ([3, ..], 2) => 7,
-            ([2, ..], 3) => 7,
-            ([1, ..], 4) => 7,
-
-            ([4, ..], 0) => 6,
-            ([3, ..], 1) => 6,
-            ([2, ..], 2) => 6,
-            ([1, ..], 3) => 6,
-
-            ([3, 2], 0) => 5,
-            ([2, 2, ..], 1) => 5,
-
-            ([3, ..], 0) => 4,
-            ([2, ..], 1) => 4,
-            ([1, ..], 2) => 4,
-
-            ([2, 2, ..], 0) => 3,
-
-            ([2, ..], 0) => 2,
-            ([1, ..], 1) => 2,
-
-            ([1, ..], 0) => 1,
+        if occurence_vec.len() > 0 {
+            occurence_vec[0] += j_count;
+        } else {
+            occurence_vec.push(j_count);
+        }
+        let hand_type = match occurence_vec.as_slice() {
+            [5] => 7,
+            [4, ..] => 6,
+            [3, 2] => 5,
+            [3, ..] => 4,
+            [2, 2, ..] => 3,
+            [2, ..] => 2,
+            [1, ..] => 1,
             _ => panic!("hand type couldn't be detected"),
         };
 
