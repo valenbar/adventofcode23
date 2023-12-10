@@ -12,9 +12,11 @@ fn main() -> Result<(), std::io::Error> {
         dir_map.insert(key, value);
     }
 
-    let task_1 = follow_directions(directions, dir_map);
+    let task_1 = follow_directions(directions.clone(), dir_map.clone());
     println!("task 1: {task_1}");
 
+    let task_2 = follow_directions_2(directions, dir_map);
+    println!("task 2: {task_2}");
 
     Ok(())
 }
@@ -38,7 +40,34 @@ fn follow_directions(directions: Vec<Direction>, dir_map: HashMap<String, (Strin
 }
 
 
-#[derive(PartialEq)]
+fn follow_directions_2(directions: Vec<Direction>, dir_map: HashMap<String, (String, String)>) -> usize {
+    let mut count_steps = 0;
+
+    let mut current_locations: Vec<String> = dir_map
+        .keys()
+        .map(|s| s.to_string())
+        .filter(|s| s.ends_with('A'))
+        .collect();
+
+    loop {
+        for direction in &directions {
+            for location in current_locations.iter_mut() {
+                let new_location = match dir_map.get(location) {
+                    Some((left, right)) => if *direction == Direction::Left { left.clone() } else { right.clone() },
+                    _ => panic!("something went wrong."),
+                };
+                *location = new_location.to_string();
+            }
+            count_steps += 1;
+            if current_locations.iter().all(|l| l.ends_with('Z')) {
+                return count_steps;
+            }
+        }
+    }
+}
+
+
+#[derive(PartialEq, Clone)]
 enum Direction {
     Left,
     Right,
