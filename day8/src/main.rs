@@ -1,19 +1,45 @@
 #![allow(unused)]
-use std::{fs, os::windows::io::HandleOrInvalid, collections::HashMap};
+use std::{fs, os::windows::io::HandleOrInvalid, collections::HashMap, io::SeekFrom};
 
 fn main() -> Result<(), std::io::Error> {
-    let input = fs::read_to_string("input_demo.txt")?;
-    let directions = parse_directions(input.lines().nth(0).unwrap());
-    let dir_map: HashMap<&str, &str> = HashMap::new();
+    let input = fs::read_to_string("input.txt")?;
+    let mut lines = input.lines();
+    let directions = parse_directions(lines.next().unwrap());
+    let mut dir_map: HashMap<String, (String, String)> = HashMap::new();
+    lines.next();
 
-    // for line in input.lines() {
+    for line in lines {
+        let (key, value) = parse_line(line);
+        dir_map.insert(key, value);
+    }
 
-    // }
+    let task_1 = follow_directions(directions, dir_map);
+    println!("task 1: {task_1}");
+
 
     Ok(())
 }
 
 
+fn follow_directions(directions: Vec<Direction>, dir_map: HashMap<String, (String, String)>) -> usize {
+    let mut count_steps = 0;
+    let mut current_location = "AAA".to_string();
+    loop {
+        for direction in &directions {
+            current_location = match dir_map.get(&current_location) {
+                Some((left, right)) => if *direction == Direction::Left { left.clone() } else { right.clone() },
+                _ => panic!("something went wrong."),
+            };
+            count_steps += 1;
+            if current_location == "ZZZ" {
+                return count_steps;
+            }
+        }
+    }
+}
+
+
+#[derive(PartialEq)]
 enum Direction {
     Left,
     Right,
