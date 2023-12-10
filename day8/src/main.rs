@@ -1,5 +1,4 @@
-#![allow(unused)]
-use std::{fs, os::windows::io::HandleOrInvalid, collections::HashMap, io::SeekFrom};
+use std::{fs, collections::HashMap};
 
 fn main() -> Result<(), std::io::Error> {
     let input = fs::read_to_string("input.txt")?;
