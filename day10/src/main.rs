@@ -1,6 +1,6 @@
 use std::{fmt::Debug, fs};
 
-use eyre::{Result, Ok};
+use eyre::Result;
 
 fn main() -> Result<()> {
     let input = fs::read_to_string("input.txt")?;

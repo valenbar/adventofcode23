@@ -1,4 +1,3 @@
-use std::process::Output;
 
 fn main() -> Result<(), std::io::Error> {
     let input = include_str!("./input.txt");
@@ -9,7 +8,7 @@ fn main() -> Result<(), std::io::Error> {
 }
 
 fn part1(input: &str) -> usize {
-    // dbg!(input);
+    dbg!(input);
     // todo!()
     405
 }

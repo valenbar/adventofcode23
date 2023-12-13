@@ -1,0 +1,8 @@
+[workspace]
+resolver = "2"
+
+members = ["day*"]
+
+[workspace.dependencies]
+eyre = "0.6.1"
+itertools = "0.12.0"
