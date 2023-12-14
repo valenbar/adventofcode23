@@ -1,3 +1,5 @@
+use std::borrow::{Borrow, BorrowMut};
+
 
 
 fn main() -> Result<(), std::io::Error> {
@@ -17,35 +19,9 @@ fn part1(input: &str) -> usize {
 
     let mut hline_sum: usize = 0;
     let mut vline_sum: usize = 0;
+
     for pattern in &patterns {
-        dbg!(pattern);
-        // check horizontal mirroring
-        let h_windows = pattern.windows(2);
-        let pair_lines = h_windows.enumerate().filter(|(_, win)| win[0] == win[1]);
-
-        let mut mirrored_horizontally = false;
-        for (pair_index, _) in pair_lines {
-            mirrored_horizontally = {
-                let paired_lines: Vec<(&&str, &&str)> = {
-                    let start_top = pair_index;
-                    let start_bot = pair_index + 1;
-                    let a = &pattern[0..start_top];
-                    let b = &pattern[start_bot + 1..];
-                    a.iter().rev().zip(b.iter()).collect::<Vec<(&&str, &&str)>>()
-                };
-                dbg!(&paired_lines);
-                paired_lines.iter().all(|(a, b)| a == b)
-            };
-
-            if mirrored_horizontally {
-                hline_sum += pair_index + 1;
-                break;
-            }
-        }
-        if mirrored_horizontally {
-            continue;
-        }
-
+        // transpose pattern for checking vertical mirroring
         let pattern_tr = {
             let mut mat: Vec<Vec<char>> = vec![vec!['0'; pattern.len()]; pattern[0].len()];
             for (i, line) in pattern.iter().enumerate() {
@@ -60,32 +36,39 @@ fn part1(input: &str) -> usize {
         };
         let pattern_tr = pattern_tr.iter().map(String::as_str).collect::<Vec<&str>>();
 
-        let h_windows = pattern_tr.windows(2);
-        let pair_lines = h_windows.enumerate().filter(|(_, win)| win[0] == win[1]);
+        let mut mirror_pattern_found = false;
 
-        let mut mirrored_vertically = false;
-        for (pair_index, _) in pair_lines {
-            mirrored_vertically = {
-                let paired_lines: Vec<(&&str, &&str)> = {
-                    let start_top = pair_index;
-                    let start_bot = pair_index + 1;
-                    let a = &pattern_tr[0..start_top];
-                    let b = &pattern_tr[start_bot + 1..];
-                    a.iter().rev().zip(b.iter()).collect::<Vec<(&&str, &&str)>>()
+        for (pattern, sum) in [(pattern, &mut hline_sum), (&pattern_tr, &mut vline_sum)] {
+            let h_windows = pattern.windows(2);
+            let pair_lines = h_windows.enumerate().filter(|(_, win)| win[0] == win[1]);
+
+            for (pair_index, _) in pair_lines {
+                mirror_pattern_found = {
+                    let paired_lines: Vec<(&&str, &&str)> = {
+                        let start_top = pair_index;
+                        let start_bot = pair_index + 1;
+                        let a = &pattern[0..start_top];
+                        let b = &pattern[start_bot + 1..];
+                        a.iter().rev().zip(b.iter()).collect::<Vec<(&&str, &&str)>>()
+                    };
+                    paired_lines.iter().all(|(a, b)| a == b)
                 };
-                paired_lines.iter().all(|(a, b)| a == b)
-            };
 
-            // if yes then:
-            if mirrored_vertically {
-                vline_sum += pair_index + 1;
+                if mirror_pattern_found {
+                    *sum += pair_index + 1;
+                    break;
+                }
+            }
+            if mirror_pattern_found {
                 break;
             }
         }
-        if mirrored_vertically {
+
+        if mirror_pattern_found {
             continue;
+        } else {
+            panic!("no horizontal nor vertical mirroring detected");
         }
-        panic!("no horizontal nor vertical mirroring detected");
     }
 
     return hline_sum * 100 + vline_sum;
