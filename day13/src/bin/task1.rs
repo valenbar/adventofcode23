@@ -1,6 +1,3 @@
-use std::borrow::{Borrow, BorrowMut};
-
-
 
 fn main() -> Result<(), std::io::Error> {
     let input = include_str!("./input.txt");
